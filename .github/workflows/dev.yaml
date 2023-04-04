@@ -27,24 +27,24 @@ jobs:
       - name: Build Docker container
         id: build-image
         run: |
-          docker build -t $ECR_REGISTRY/gsh/send-to-insval:dev .
+          docker build -t $ECR_REGISTRY/gsh/lambda-post-to-mahler:dev .
         env:
           ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
       # - name: Run tests
       #   run: |
-      #     docker run --name test-lambda-redox --rm -d $ECR_REGISTRY/gsh/lambda-send-to-insval:dev
+      #     docker run --name test-lambda-redox --rm -d $ECR_REGISTRY/gsh/lambda-lambda-post-to-mahler:dev
       #     docker exec test-lambda-redox bash -c "cd /var && export PYTHONPATH="${PYTHONPATH}:/var/task" && pytest tests"
       #   env:
       #     ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
       - name: Push image to Amazon ECR
-        run: docker push $ECR_REGISTRY/gsh/send-to-insval:dev
+        run: docker push $ECR_REGISTRY/gsh/lambda-post-to-mahler:dev
         env:
           ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
       - name: Update AWS dev lambda to point to new image
         run: |
-          image_sha=`docker images --digests | grep send-to-insval | grep dev | awk '{print $3}' | grep sha256`
+          image_sha=`docker images --digests | grep lambda-post-to-mahler | grep dev | awk '{print $3}' | grep sha256`
           echo "Pointing lambda to new sha: ${image_sha}"
-          aws lambda update-function-code --function-name send-to-insval \
-          --image-uri $ECR_REGISTRY/gsh/send-to-insval@${image_sha} 2>&1 > /dev/null
+          aws lambda update-function-code --function-name lambda-post-to-mahler \
+          --image-uri $ECR_REGISTRY/gsh/lambda-post-to-mahler@${image_sha} 2>&1 > /dev/null
         env:
           ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
