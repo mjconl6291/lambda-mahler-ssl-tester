@@ -78,8 +78,18 @@ def post_to_mahler(queue_id, master_id, mrn, event_type):
         #  post to mahler update endpoint
          requests.post(url, headers=headers, data=mapped_payload)
     else: 
-        ...
-        # if mrn = mrn then send to mahler
+        # if we have mrn then send update to mahler
+         get_demographics_call = f"call public.mahler_get_demographics('{master_id}', {mahler_client_id}, '{{}}');"
+         cur.execute(get_demographics_call,)
+         mahler_post_payload = cur.fetchone()
+         mahler_post_payload = json.dumps(mahler_post_payload)
+         update_template = env.get_template('update.json')
+         mapped_payload = json.loads(update_template.render(mahler_post_payload))
+        #  add username and key from env variables
+         mapped_payload['username'] = os.environ['USERNAME1']
+         mapped_payload['key'] = os.environ['KEY']
+        #  post to mahler update endpoint
+         requests.post(url, headers=headers, data=mapped_payload)
 
 
 
