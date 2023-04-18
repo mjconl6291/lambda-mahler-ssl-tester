@@ -1,0 +1,12 @@
+{
+"action": "api_initial_client_register",
+"username": "",
+"key": "",
+"FirstName": "{{FirstName}}",
+"LastName": "{{LastName}}",
+"Birthday": "{{Birthday}}",
+"Gender": "{{Gender}}",
+"Email": "{{Email}}",
+"Phone": "{{Phone}}",
+"sourceNOTES": ""
+}
