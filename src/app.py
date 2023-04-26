@@ -14,14 +14,13 @@ from jinja2.environment import Environment
 import sys
 
 
-# def handler(event,context):
-
-#     payload = event
-#     body = event['Records'][0]['Sns']['Message']
-#     logger.info('got here', event)
-#     body = json.loads(body)
-#     print(body)
-#     insval_process(body)
+def handler(event,context):
+    body = event['Records'][0]['Sns']['Message']
+    body = json.loads(body)
+    # queue_id = body['queue_id']
+    # patient_id = body['patient_id']
+    print(body)
+    # post_to_mahler(queue_id, master_id, mrn, event_type)
 
 ssm = boto3.client('ssm',  aws_access_key_id=os.environ['KEY'], aws_secret_access_key=os.environ['SECRET'],  region_name='us-east-2')
 param = ssm.get_parameter(Name='uck-etl-db-prod-masterdata', WithDecryption=True )
@@ -93,4 +92,3 @@ def post_to_mahler(queue_id, master_id, mrn, event_type):
 
 
 
-post_to_mahler()
