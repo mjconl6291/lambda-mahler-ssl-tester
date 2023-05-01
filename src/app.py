@@ -14,14 +14,18 @@ import requests
 import sys
 
 
-# def handler(event,context):
+def handler(event,context):
 
-#     payload = event
-#     body = event['Records'][0]['Sns']['Message']
-#     logger.info('got here', event)
-#     body = json.loads(body)
-#     print(body)
-#     insval_process(body)
+    body = event['Records'][0]['Sns']['Message']
+    body = json.loads(body)
+    queue_id = body['queue_id']
+    master_id = body['master_id']
+    mrn = body['mrn']
+    event_type = body['event']
+
+    print(event)
+    post_to_mahler(queue_id, master_id, mrn, event_type )
+
 
 ssm = boto3.client('ssm',  aws_access_key_id=os.environ['KEY'], aws_secret_access_key=os.environ['SECRET'],  region_name='us-east-2')
 param = ssm.get_parameter(Name='uck-etl-db-prod-masterdata', WithDecryption=True )
@@ -42,11 +46,6 @@ def masterdata_conn():
 def post_to_mahler(queue_id, master_id, mrn, event_type):
     _targetconnection = masterdata_conn()
     cur = _targetconnection.cursor()
-    # get_mrn = f"select mahler_client_id from mahler_id_cx mic where mic.master_id = {master_id};"
-    # cur.execute(get_mrn,)
-    # mrn = cur.fetchone()
-    # if mrn = 'new patient' then post to mahler, get mahler id, call upsert proc, get demographics, send to mahler
-    # if mrn = mrn then send to mahler
     url = os.environ['URL']
     headers= {'Content-Type': 'application/x-www-form-urlencoded'}
 
