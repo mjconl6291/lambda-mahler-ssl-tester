@@ -9,13 +9,14 @@ import sys
 def handler(event,context):
 
     body = event['Records'][0]['Sns']['Message']
-    body = json.loads(body)
-    queue_id = body['queue_id']
-    master_id = body['master_id']
-    mrn = body['mrn']
-    event_type = body['event']
-    print(event)
-    post_to_mahler(queue_id, master_id, mrn, event_type)
+    # body = json.loads(body)
+    # queue_id = body['queue_id']
+    # master_id = body['master_id']
+    # mrn = body['mrn']
+    # event_type = body['event']
+    print('event ', event)
+    print('body ', body)
+    # post_to_mahler(queue_id, master_id, mrn, event_type)
 
 
 ssm = boto3.client('ssm',  aws_access_key_id=os.environ['KEY'], aws_secret_access_key=os.environ['SECRET'],  region_name='us-east-2')
