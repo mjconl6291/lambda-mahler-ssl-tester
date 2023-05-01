@@ -1,16 +1,8 @@
-# import pandas as pd
 import psycopg2
 import json
-# import pandas.io.sql as sqlio
-# pd.set_option('display.max_columns', 500)
 import boto3
 import os
-# from loguru import logger
 import requests
-# from jinja2.loaders import FileSystemLoader
-# from jinja2.environment import Environment
-# from jinja2.loaders import FileSystemLoader
-# from jinja2.environment import Environment
 import sys
 
 
@@ -22,9 +14,8 @@ def handler(event,context):
     master_id = body['master_id']
     mrn = body['mrn']
     event_type = body['event']
-
     print(event)
-    post_to_mahler(queue_id, master_id, mrn, event_type )
+    post_to_mahler(queue_id, master_id, mrn, event_type)
 
 
 ssm = boto3.client('ssm',  aws_access_key_id=os.environ['KEY'], aws_secret_access_key=os.environ['SECRET'],  region_name='us-east-2')
@@ -58,9 +49,6 @@ def post_to_mahler(queue_id, master_id, mrn, event_type):
             print(f"Error executing upsert_mrn_call: {str(e)}")         
          mahler_post_payload = cur.fetchone()
          mahler_post_payload = json.dumps(mahler_post_payload)
-         # mahler_post_payload = json.loads(mahler_post_payload)[0]
-         # get_mrn_template = env.get_template('get_mrn.json')
-         # data = json.loads(get_mrn_template.render(mahler_post_payload))
          data = json.loads(mahler_post_payload)[0]
          # add username and key from env variables
          data['username'] = os.environ['USERNAME1']
@@ -100,11 +88,4 @@ def post_to_mahler(queue_id, master_id, mrn, event_type):
     demo_data['action'] = 'api_update_client_information'     
     demo_response = requests.post(url, headers=headers, data=demo_data)
     print(demo_response.text)
-
-
-
-
-
-post_to_mahler(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
-#test- get the ids from sysargv
 
