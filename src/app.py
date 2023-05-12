@@ -10,14 +10,17 @@ def handler(event,context):
     body = event['Records'][0]['Sns']['Message']
     body = json.loads(body)
     master_id = body['master_id']
+    queue_id = body['queue_id']
     mrn = body['mrn']
     event_type = body['event']
     if event_type == 'new':
-        post_new_patient(master_id, mrn)
+        post_new_patient(master_id)
     elif event_type == 'update':
         post_demographics(master_id, mrn)
     elif event_type == 'event':
-        post_event(master_id, mrn)
+        post_event(queue_id, mrn)
+    elif event_type == 'new_patient_and_event':
+        post_patient_and_event(master_id, mrn)
 
 
 ssm = boto3.client('ssm',  aws_access_key_id=os.environ['KEY'], aws_secret_access_key=os.environ['SECRET'],  region_name='us-east-2')
@@ -36,7 +39,7 @@ def masterdata_conn():
 url = os.environ['URL']
 headers= {'Content-Type': 'application/x-www-form-urlencoded'}
 
-def post_new_patient(master_id, mrn):
+def post_new_patient(master_id):
     _targetconnection = masterdata_conn()
     cur = _targetconnection.cursor()
     get_new_patient_call = f"call public.mahler_get_new_patient('{master_id}', '{{}}')"
@@ -90,10 +93,10 @@ def post_demographics(master_id, mrn):
     cur.close()
     _targetconnection.close()
 
-def post_event(master_id, mrn):
+def post_event(queue_id):
     _targetconnection = masterdata_conn()
     cur = _targetconnection.cursor()
-    get_event_call = f"call public.mahler_get_event('{master_id}',{mrn},'{{}}');"
+    get_event_call = f"call public.mahler_get_event('{queue_id}','{{}}');"
     try:
         cur.execute(get_event_call)
         _targetconnection.commit()
@@ -109,3 +112,7 @@ def post_event(master_id, mrn):
     print(event_response.text)
     cur.close()
     _targetconnection.close()
+
+def post_patient_and_event(master_id, queue_id):
+    post_new_patient(master_id)
+    post_event(queue_id)
