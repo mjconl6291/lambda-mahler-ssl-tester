@@ -20,7 +20,7 @@ def handler(event,context):
     elif event_type == 'event':
         post_event(queue_id, mrn)
     elif event_type == 'new_patient_and_event':
-        post_patient_and_event(master_id, mrn)
+        post_patient_and_event(queue_id)
 
 
 ssm = boto3.client('ssm',  aws_access_key_id=os.environ['KEY'], aws_secret_access_key=os.environ['SECRET'],  region_name='us-east-2')
