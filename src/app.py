@@ -15,13 +15,16 @@ def handler(event,context):
     event_type = body['event']
     if event_type == 'new':
         post_new_patient(master_id)
+        update_task_available(queue_id)
     elif event_type == 'update':
         post_demographics(master_id, mrn)
+        update_task_available(queue_id)
     elif event_type == 'event':
         post_event(queue_id)
+        update_task_available(queue_id)
     elif event_type == 'new_patient_and_event':
         post_patient_and_event(master_id, queue_id)
-
+        update_task_available(queue_id)
 
 ssm = boto3.client('ssm',  aws_access_key_id=os.environ['KEY'], aws_secret_access_key=os.environ['SECRET'],  region_name='us-east-2')
 param = ssm.get_parameter(Name='uck-etl-db-prod-masterdata', WithDecryption=True )
@@ -116,3 +119,15 @@ def post_event(queue_id):
 def post_patient_and_event(master_id, queue_id):
     post_new_patient(master_id)
     post_event(queue_id)
+
+def update_task_available(queue_id):
+    _targetconnection = masterdata_conn()
+    cur = _targetconnection.cursor()
+    update_task_call = f"call public.mahler_update_task_available('{queue_id}');"
+    try:
+        cur.execute(update_task_call)
+        _targetconnection.commit()
+    except Exception as e:
+        print(f"Error executing update_task_call: {str(e)}")
+    cur.close()
+    _targetconnection.close()
