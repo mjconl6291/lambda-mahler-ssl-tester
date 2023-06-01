@@ -108,7 +108,7 @@ def post_event(queue_id):
     mahler_event_payload = json.dumps(cur.fetchone())
     print(mahler_event_payload)
     event_data = json.loads(mahler_event_payload)[0]   
-    pond_event_id = mahler_event_payload['schedule_notes']
+    pond_event_id = event_data['schedule_notes']
     pond_event_id = pond_event_id.rsplit("_", 1)[-1]
     event_data['username'] = os.environ['USERNAME1']
     event_data['key'] = os.environ['MAHLER_KEY']
