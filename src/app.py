@@ -107,12 +107,18 @@ def post_event(queue_id):
         print(f"Error executing get_event_call: {str(e)}")
     mahler_event_payload = json.dumps(cur.fetchone())
     print(mahler_event_payload)
+    pond_event_id = mahler_event_payload['schedule_notes']
+    pond_event_id = pond_event_id.rsplit("_", 1)[-1]
     event_data = json.loads(mahler_event_payload)[0]   
     event_data['username'] = os.environ['USERNAME1']
     event_data['key'] = os.environ['MAHLER_KEY']
     event_data['action'] = 'api_schedule_event'     
     event_response = requests.post(url, headers=headers, data=event_data)
     print(event_response.text)
+    mahler_event_id = event_response.text['event_id']
+    insert_call = f"insert into mahler_event_cx(pond_event_id,mahler_event_id) values({pond_event_id, mahler_event_id});"
+    cur.execute(insert_call)
+    _targetconnection.commit()
     cur.close()
     _targetconnection.close()
 
