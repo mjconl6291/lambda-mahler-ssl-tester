@@ -116,7 +116,7 @@ def post_event(queue_id):
     event_response = requests.post(url, headers=headers, data=event_data)
     print(event_response.text)
     mahler_event_id = json.loads(event_response.text)
-    mahler_event_id = event_response.text['event_id']
+    mahler_event_id = mahler_event_id['event_id']
     insert_call = f"insert into mahler_event_cx(pond_event_id,mahler_event_id) values({pond_event_id, mahler_event_id});"
     cur.execute(insert_call)
     _targetconnection.commit()
