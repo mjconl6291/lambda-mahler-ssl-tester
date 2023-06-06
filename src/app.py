@@ -117,9 +117,12 @@ def post_event(queue_id):
     print(event_response.text)
     mahler_event_id = json.loads(event_response.text)
     mahler_event_id = mahler_event_id['event_id']
-    insert_call = f"insert into mahler_event_cx(pond_event_id,mahler_event_id) values({pond_event_id}, {mahler_event_id});"
-    cur.execute(insert_call)
-    _targetconnection.commit()
+    insert_call = f"insert into mahler_event_cx(pond_visit_id,mahler_event_id) values({pond_event_id}, {mahler_event_id});"
+    try:
+        cur.execute(insert_call)
+        _targetconnection.commit()
+    except Exception as e:
+        print(f"Error executing insert_event: {str(e)}")
     cur.close()
     _targetconnection.close()
 
