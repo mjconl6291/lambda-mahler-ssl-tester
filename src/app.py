@@ -55,6 +55,7 @@ def post_new_patient(master_id):
     mahler_post_payload = cur.fetchone()
     mahler_post_payload = json.dumps(mahler_post_payload)
     data = json.loads(mahler_post_payload)[0]
+    print(data)
         # add username and key from env variables
     data['username'] = os.environ['USERNAME1']
     data['key'] = os.environ['MAHLER_KEY']
