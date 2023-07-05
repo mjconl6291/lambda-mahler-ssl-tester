@@ -73,7 +73,6 @@ def post_new_patient(master_id):
             except Exception as e:
                 print(f"Error executing upsert_mrn_call: {str(e)}")
             mrn = mahler_client_id
-            _targetconnection.close()
             post_demographics(master_id, mrn)
 
 def post_demographics(master_id, mrn):
