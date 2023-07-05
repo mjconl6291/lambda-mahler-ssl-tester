@@ -92,7 +92,7 @@ def post_demographics(master_id, mrn):
             demo_data['action'] = 'api_update_client_information'     
             demo_response = requests.post(url, headers=headers, data=demo_data)
             print(demo_response.text)
-            _targetconnection.close()
+            # _targetconnection.close()
 
 def post_event(queue_id):
     with masterdata_conn() as _targetconnection:
@@ -121,7 +121,7 @@ def post_event(queue_id):
                 _targetconnection.commit()
             except Exception as e:
                 print(f"Error executing insert_event: {str(e)}")
-            _targetconnection.close()
+            # _targetconnection.close()
 
 def post_patient_and_event(master_id, queue_id):
     post_new_patient(master_id)
@@ -136,4 +136,4 @@ def update_task_available(queue_id):
                 _targetconnection.commit()
             except Exception as e:
                 print(f"Error executing update_task_call: {str(e)}")
-            _targetconnection.close()
+            # _targetconnection.close()
