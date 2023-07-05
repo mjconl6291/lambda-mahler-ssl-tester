@@ -12,6 +12,7 @@ def handler(event,context):
     mrn = body['mrn']
     event_type = body['event']
     print(event_type)
+    print(master_id)
     if event_type == 'new':
         post_new_patient(master_id)
         update_task_available(queue_id)
